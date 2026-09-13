@@ -72,6 +72,8 @@
   <div class="container">
     <div class="canvas-area">
       <canvas id="stampCanvas" width="300" height="300"></canvas>
+      <button id="downloadButton">Download PNG</button>
+
     </div>
 
     <div class="controls">
@@ -151,6 +153,15 @@
 
       saveSettings();
     }
+      
+    document.getElementById("downloadButton").addEventListener("click", () => {
+      const canvas = document.getElementById("stampCanvas");
+      const link = document.createElement("a");
+
+      link.download = "digital-stamp.png";
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    });
 
     function saveSettings() {
       const settings = {
