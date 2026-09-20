@@ -76,6 +76,11 @@
       margin: 0 2px;
     }
 
+    .save-controls button.saved {
+      background-color: #cc0000;
+      color: #ffffff;
+    }
+
   </style>
 </head>
 <body>
@@ -224,6 +229,102 @@
     document.querySelectorAll("input").forEach(input => {
       input.addEventListener("input", drawStamp);
     });
+
+    function getCurrentSettings() {
+      return {
+        message: document.getElementById("message").value,
+        messageSize: document.getElementById("messageSize").value,
+        messageY: document.getElementById("messageY").value,
+
+        kanji: document.getElementById("kanji").value,
+        kanjiSize: document.getElementById("kanjiSize").value,
+        kanjiY: document.getElementById("kanjiY").value,
+
+        date: document.getElementById("date").value,
+        autoDate: document.getElementById("autoDate").checked,
+        dateSize: document.getElementById("dateSize").value,
+        dateY: document.getElementById("dateY").value,
+
+        color: document.getElementById("color").value
+      };
+    }
+
+    function saveToSlot(slotNumber) {
+      const settings = getCurrentSettings();
+
+      localStorage.setItem(
+        `stampSlot${slotNumber}`,
+        JSON.stringify(settings)
+      );
+
+      document
+        .getElementById(`saveButton${slotNumber}`)
+        .classList.add("saved");
+    }
+
+    function loadFromSlot(slotNumber) {
+      const saved = localStorage.getItem(`stampSlot${slotNumber}`);
+
+      if (!saved) {
+        return;
+      }
+
+      const settings = JSON.parse(saved);
+
+      document.getElementById("message").value = settings.message;
+      document.getElementById("messageSize").value = settings.messageSize;
+      document.getElementById("messageY").value = settings.messageY;
+
+      document.getElementById("kanji").value = settings.kanji;
+      document.getElementById("kanjiSize").value = settings.kanjiSize;
+      document.getElementById("kanjiY").value = settings.kanjiY;
+
+      document.getElementById("date").value = settings.date;
+      document.getElementById("autoDate").checked = settings.autoDate;
+      document.getElementById("dateSize").value = settings.dateSize;
+      document.getElementById("dateY").value = settings.dateY;
+
+      document.getElementById("color").value = settings.color;
+
+      drawStamp();
+    }
+
+    function updateSaveButtons() {
+      for (let i = 1; i <= 3; i++) {
+        const button = document.getElementById(`saveButton${i}`);
+
+        if (localStorage.getItem(`stampSlot${i}`)) {
+          button.classList.add("saved");
+        }
+      }
+    }
+
+    document.getElementById("saveButton1").addEventListener("click", () => {
+      saveToSlot(1);
+    });
+
+    document.getElementById("loadButton1").addEventListener("click", () => {
+      loadFromSlot(1);
+    });
+
+    document.getElementById("saveButton2").addEventListener("click", () => {
+      saveToSlot(2);
+    });
+
+    document.getElementById("loadButton2").addEventListener("click", () => {
+      loadFromSlot(2);
+    });
+
+    document.getElementById("saveButton3").addEventListener("click", () => {
+      saveToSlot(3);
+    });
+
+    document.getElementById("loadButton3").addEventListener("click", () => {
+      loadFromSlot(3);
+    });
+
+    updateSaveButtons();
+
   </script>
 </body>
 </html>
